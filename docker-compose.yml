@@ -2,13 +2,36 @@ version: '3'
 services:
   flasky:
     build: .
-    ports:
-      - "8000:5000"
     env_file: .env
     restart: always
     links:
       - mysql:dbserver
+    networks:  # <-- here
+      - nginx_network
+      - database_network
+
   mysql:
     image: "mysql/mysql-server:5.7"
     env_file: .env-mysql
     restart: always
+    networks:  # <-- connect to the bridge
+      - database_network
+
+  nginx:
+    restart: always
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/log:/var/log/nginx
+    depends_on:
+      - flasky
+    networks:  # <-- here
+      - nginx_network
+
+networks:  # <-- and here
+  nginx_network:
+    driver: bridge
+  database_network:  # <-- add the bridge
+    driver: bridge
