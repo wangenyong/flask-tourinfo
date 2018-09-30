@@ -14,6 +14,8 @@ services:
     image: "mysql/mysql-server:5.7"
     env_file: .env-mysql
     restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
     networks:  # <-- connect to the bridge
       - database_network
 
