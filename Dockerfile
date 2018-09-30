@@ -7,7 +7,7 @@ USER flasky
 
 WORKDIR /home/flasky
 
-COPY requirements.txt requirements.txt
+COPY requirements requirements
 RUN python -m venv venv
 RUN venv/bin/pip install --upgrade pip
 RUN venv/bin/pip install -r requirements/docker.txt
