@@ -7,14 +7,11 @@ from ..models import Place
 @api.route('/place')
 def get_place():
     res = Place.query.all()
-    data = []
-    for place in res:
-        data.append(place.to_json())
     return jsonify({
         'status': 'success',
         'code': 10000,
         'message': 'get place success',
-        'data': data
+        'data': [place.to_json() for place in res]
     })
 
 @api.route('/place', methods=['POST'])
