@@ -21,6 +21,7 @@ class Place(db.Model):
     name = db.Column(db.String(255), unique=True, nullable=False)
     star_num = db.Column(db.Integer, default=0, nullable=False)
     like_num = db.Column(db.Integer, default=0, nullable=False)
+    images = db.relationship('Image', backref='place')
 
     def to_json(self):
         json_place = {
@@ -29,3 +30,10 @@ class Place(db.Model):
             'like_num': self.like_num
         }
         return json_place
+
+
+class Image(db.Model):
+    __tablename__ = 'images'
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(255), unique=True, nullable=False)
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'))
