@@ -16,7 +16,7 @@ class User(db.Model):
 
 
 class Place(db.Model):
-    __tablename__ = 'place'
+    __tablename__ = 'places'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     star_num = db.Column(db.Integer, default=0, nullable=False)
