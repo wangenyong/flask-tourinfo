@@ -28,8 +28,11 @@ class Place(db.Model):
     def to_json(self):
         json_place = {
             'name': self.name,
+            'watch_num': self.watch_num,
             'star_num': self.star_num,
-            'like_num': self.like_num
+            'country': self.country,
+            'city': self.city,
+            'images': [image.to_json() for image in self.images]
         }
         return json_place
 
@@ -39,3 +42,6 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), unique=True, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
+
+    def to_json(self):
+        return self.url
