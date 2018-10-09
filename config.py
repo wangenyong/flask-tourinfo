@@ -1,11 +1,14 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
+from flask_uploads import IMAGES
 
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOADED_PHOTO_DEST = os.path.join(basedir, 'static/images')
+    UPLOADED_PHOTO_ALLOW = IMAGES
 
     @staticmethod
     def init_app(app):

@@ -2,10 +2,11 @@ from flask import Flask
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from config import config
+from flask_uploads import configure_uploads, UploadSet
 
 moment = Moment()
 db = SQLAlchemy()
-
+photos = UploadSet('PHOTO')
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -14,6 +15,7 @@ def create_app(config_name):
 
     moment.init_app(app)
     db.init_app(app)
+    configure_uploads(app, photos)
 
     @app.route('/')
     def index():
