@@ -19,8 +19,10 @@ class Place(db.Model):
     __tablename__ = 'places'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
+    watch_num = db.Column(db.Integer, default=0, nullable=False)
     star_num = db.Column(db.Integer, default=0, nullable=False)
-    like_num = db.Column(db.Integer, default=0, nullable=False)
+    country = db.Column(db.String(64), nullable=False)
+    city = db.Column(db.String(64), nullable=False)
     images = db.relationship('Image', backref='place')
 
     def to_json(self):
@@ -36,4 +38,4 @@ class Image(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), unique=True, nullable=False)
-    place_id = db.Column(db.Integer, db.ForeignKey('places.id'))
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
