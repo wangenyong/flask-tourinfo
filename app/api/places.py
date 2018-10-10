@@ -1,19 +1,25 @@
-from flask import jsonify, request
+from flask import jsonify, request, g
 from . import api
-from ..models import Place, Image
+from ..models import Place, Image, Permission
 from .. import db, photos, response as res
 from .authentication import auth
+from ..decorators import permission_required
 
 
 @api.route('/place')
 @auth.login_required
+@permission_required(Permission.WRITE)
 def get_place():
     places = Place.query.all()
-    data = [place.to_json() for place in places]
-    return jsonify(res.success('get place success', data))
+    if places is not None and len(places) > 0:
+        data = [place.to_json() for place in places]
+        return jsonify(res.success('get place success', data))
+    return jsonify(res.fail('no data'))
 
 
 @api.route('/place', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
 def add_place():
     if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
