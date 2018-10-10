@@ -1,15 +1,18 @@
-from flask import jsonify
-from flask import request
+from flask import jsonify, request
 from . import api
 from ..models import Place, Image
 from .. import db, photos, response as res
+from .auth import Auth
 
 
 @api.route('/place')
 def get_place():
-    places = Place.query.all()
-    data = [place.to_json() for place in places]
-    return res.success('get place success', data)
+    result = Auth.identify(Auth, request)
+    if (result['code'] == 200):
+        places = Place.query.all()
+        data = [place.to_json() for place in places]
+        result = res.success('get place success', data)
+    return jsonify(result) 
 
 
 @api.route('/place', methods=['POST'])
@@ -27,5 +30,5 @@ def add_place():
         db.session.add(place)
         db.session.commit()
 
-        return res.success('add place success')
+        return jsonify(res.success('add place success')) 
 

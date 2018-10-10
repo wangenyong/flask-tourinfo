@@ -1,17 +1,15 @@
-from flask import jsonify
-
 
 def success(msg, data='', code=200):
-    return jsonify({
+    return {
         'code': code,
         'msg': msg,
         'data': data
-    })
+    }
 
 
 def fail(msg, data='', code=-1):
-    return jsonify({
+    return {
         'code': code,
         'msg': msg,
         'data': data
-    })
+    }
