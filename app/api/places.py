@@ -2,17 +2,15 @@ from flask import jsonify, request
 from . import api
 from ..models import Place, Image
 from .. import db, photos, response as res
-from .auth import Auth
+from .authentication import auth
 
 
 @api.route('/place')
+@auth.login_required
 def get_place():
-    result = Auth.identify(Auth, request)
-    if (result['code'] == 200):
-        places = Place.query.all()
-        data = [place.to_json() for place in places]
-        result = res.success('get place success', data)
-    return jsonify(result) 
+    places = Place.query.all()
+    data = [place.to_json() for place in places]
+    return jsonify(res.success('get place success', data))
 
 
 @api.route('/place', methods=['POST'])
