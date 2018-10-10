@@ -2,6 +2,7 @@ import jwt
 import datetime
 import time
 from flask import jsonify, current_app as app
+from .. import response as res
 
 
 class Auth():
@@ -27,11 +28,6 @@ class Auth():
 
     def authenticate(self, openid, session_key):
         token = self.encode_auth_token(openid, session_key)
-        return jsonify({
-            'status': 'success',
-            'code': 10000,
-            'message': 'get place success',
-            'data': {
-                'token': token.decode()
-            }
+        return res.success('got token', {
+            'token': token.decode()
         })
