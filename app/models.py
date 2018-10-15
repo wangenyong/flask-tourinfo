@@ -88,9 +88,9 @@ class User(db.Model):
     avatar_url = db.Column(db.String(255))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     watch = db.relationship('Place', secondary=watch, lazy='dynamic',
-                            backref=db.backref('watch_users', lazy=True))
+                            backref=db.backref('watch_users', lazy='dynamic'))
     star = db.relationship('Place', secondary=star, lazy='dynamic',
-                           backref=db.backref('star_users', lazy=True))
+                           backref=db.backref('star_users', lazy='dynamic'))
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -162,8 +162,8 @@ class Place(db.Model):
     def to_json(self):
         json_place = {
             'name': self.name,
-            'watch_num': self.watch_num,
-            'star_num': self.star_num,
+            'watch_num': self.watch_users.count(),
+            'star_num': self.star_users.count(),
             'country': self.country,
             'city': self.city,
             'images': [image.to_json() for image in self.images]
