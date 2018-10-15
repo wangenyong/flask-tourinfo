@@ -34,5 +34,32 @@ def add_place():
         db.session.add(place)
         db.session.commit()
 
-        return jsonify(res.success('add place success')) 
+        return jsonify(res.success('add place success'))
 
+
+@api.route('/place/<int:id>/star', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def star(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    exists = place.watch_users.filter_by(id=user.id).first() is not None
+    if exists:
+        return jsonify(res.fail('You have stared'))
+    place.star_users.append(user)
+    db.session.commit()
+    return jsonify(res.success('star success'))
+
+
+@api.route('/place/<int:id>/watch', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def watch(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    exists = place.watch_users.filter_by(id=user.id).first() is not None
+    if exists:
+        return jsonify(res.fail('You have watched'))
+    place.watch_users.append(user)
+    db.session.commit()
+    return jsonify(res.success('watch success'))
