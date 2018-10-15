@@ -13,6 +13,21 @@ class Permission:
     ADMIN = 16
 
 
+watch = db.Table('watch',
+                 db.Column('place_id', db.Integer, db.ForeignKey(
+                     'places.id'), primary_key=True),
+                 db.Column('user_id', db.Integer, db.ForeignKey(
+                     'users.id'), primary_key=True)
+                 )
+
+star = db.Table('star',
+                db.Column('place_id', db.Integer, db.ForeignKey(
+                    'places.id'), primary_key=True),
+                db.Column('user_id', db.Integer, db.ForeignKey(
+                    'users.id'), primary_key=True)
+                )
+
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -72,6 +87,10 @@ class User(db.Model):
     nick_name = db.Column(db.String(64))
     avatar_url = db.Column(db.String(255))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    watch = db.relationship('Place', secondary=watch, lazy='dynamic',
+                            backref=db.backref('watch_users', lazy=True))
+    star = db.relationship('Place', secondary=star, lazy='dynamic',
+                           backref=db.backref('star_users', lazy=True))
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -136,8 +155,6 @@ class Place(db.Model):
     __tablename__ = 'places'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
-    watch_num = db.Column(db.Integer, default=0, nullable=False)
-    star_num = db.Column(db.Integer, default=0, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     images = db.relationship('Image', backref='place')
