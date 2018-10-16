@@ -15,21 +15,21 @@ class Permission:
 
 watch = db.Table('watch',
                  db.Column('place_id', db.Integer, db.ForeignKey(
-                     'places.id'), primary_key=True),
+                     'place.id'), primary_key=True),
                  db.Column('user_id', db.Integer, db.ForeignKey(
-                     'users.id'), primary_key=True)
+                     'user.id'), primary_key=True)
                  )
 
 star = db.Table('star',
                 db.Column('place_id', db.Integer, db.ForeignKey(
-                    'places.id'), primary_key=True),
+                    'place.id'), primary_key=True),
                 db.Column('user_id', db.Integer, db.ForeignKey(
-                    'users.id'), primary_key=True)
+                    'user.id'), primary_key=True)
                 )
 
 
 class Role(db.Model):
-    __tablename__ = 'roles'
+    __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     default = db.Column(db.Boolean, default=False, index=True, nullable=False)
@@ -80,18 +80,20 @@ class Role(db.Model):
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     openid = db.Column(db.String(64), unique=True, index=True, nullable=False)
     session_key = db.Column(db.String(255), unique=True, nullable=False)
     nick_name = db.Column(db.String(64))
     avatar_url = db.Column(db.String(255))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     watch = db.relationship('Place', secondary=watch, lazy='dynamic',
                             backref=db.backref('watch_users', lazy='dynamic'))
     star = db.relationship('Place', secondary=star, lazy='dynamic',
                            backref=db.backref('star_users', lazy='dynamic'))
     traffic_infos = db.relationship('Traffic', backref='user', lazy='dynamic')
+    hotel_infos = db.relationship('Hotel', backref='user', lazy='dynamic')
+    food_infos = db.relationship('Food', backref='user', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -153,13 +155,15 @@ class User(db.Model):
 
 
 class Place(db.Model):
-    __tablename__ = 'places'
+    __tablename__ = 'place'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     images = db.relationship('Image', backref='place')
     traffic_infos = db.relationship('Traffic', backref='place', lazy='dynamic')
+    hotel_infos = db.relationship('Hotel', backref='place', lazy='dynamic')
+    food_infos = db.relationship('Food', backref='place', lazy='dynamic')
 
     def to_json(self):
         json_place = {
@@ -175,11 +179,11 @@ class Place(db.Model):
 
 
 class Image(db.Model):
-    __tablename__ = 'images'
+    __tablename__ = 'image'
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), unique=True, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey(
-        'places.id'), nullable=False)
+        'place.id'), nullable=False)
 
     def to_json(self):
         return self.url
@@ -194,9 +198,9 @@ class Traffic(db.Model):
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
     place_id = db.Column(db.Integer, db.ForeignKey(
-        'places.id'), nullable=False)
+        'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        'users.id'), nullable=False)
+        'user.id'), nullable=False)
 
     def to_json(self):
         json_traffic = {
@@ -216,9 +220,9 @@ class Hotel(db.Model):
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
     place_id = db.Column(db.Integer, db.ForeignKey(
-        'places.id'), nullable=False)
+        'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        'users.id'), nullable=False)
+        'user.id'), nullable=False)
 
     def to_json(self):
         json_hotel = {
@@ -238,9 +242,9 @@ class Food(db.Model):
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
     place_id = db.Column(db.Integer, db.ForeignKey(
-        'places.id'), nullable=False)
+        'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        'users.id'), nullable=False)
+        'user.id'), nullable=False)
 
     def to_json(self):
         json_food = {

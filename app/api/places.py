@@ -1,6 +1,6 @@
 from flask import jsonify, request, g
 from . import api
-from ..models import Place, Image, Permission, Traffic
+from ..models import Place, Image, Permission, Traffic, Hotel, Food
 from .. import db, photos, response as res
 from .authentication import auth
 from ..decorators import permission_required
@@ -10,7 +10,7 @@ from sqlalchemy import exc
 @api.route('/place')
 @auth.login_required
 @permission_required(Permission.WRITE)
-def get_place():
+def get_all_place():
     places = Place.query.all()
     if places is not None and len(places) > 0:
         data = [place.to_json() for place in places]
