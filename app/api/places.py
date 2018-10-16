@@ -20,7 +20,6 @@ def get_place():
 
 @api.route('/place', methods=['POST'])
 @auth.login_required
-@permission_required(Permission.WRITE)
 def add_place():
     if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
@@ -66,10 +65,20 @@ def watch(id):
     return jsonify(res.success('watch success'))
 
 
+@api.route('/place/<int:id>/traffic')
+@auth.login_required
+def get_traffic(id):
+    traffics = Traffic.query.filter_by(place_id=id).all()
+    if traffics is not None and len(traffics) > 0:
+        data = [traffic.to_json() for traffic in traffics]
+        return jsonify(res.success('get traffic success', data))
+    return jsonify(res.fail('no data'))
+
+
 @api.route('/place/<int:id>/traffic', methods=['POST'])
 @auth.login_required
 @permission_required(Permission.WRITE)
-def traffic(id):
+def add_traffic(id):
     place = Place.query.filter_by(id=id).first()
     user = g.current_user
     content = request.form['content']

@@ -91,7 +91,7 @@ class User(db.Model):
                             backref=db.backref('watch_users', lazy='dynamic'))
     star = db.relationship('Place', secondary=star, lazy='dynamic',
                            backref=db.backref('star_users', lazy='dynamic'))
-    traffic_infos = db.relationship('Traffic', backref='user')
+    traffic_infos = db.relationship('Traffic', backref='user', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -159,10 +159,11 @@ class Place(db.Model):
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     images = db.relationship('Image', backref='place')
-    traffic_infos = db.relationship('Traffic', backref='place')
+    traffic_infos = db.relationship('Traffic', backref='place', lazy='dynamic')
 
     def to_json(self):
         json_place = {
+            'id': self.id,
             'name': self.name,
             'watch_num': self.watch_users.count(),
             'star_num': self.star_users.count(),
@@ -196,3 +197,11 @@ class Traffic(db.Model):
         'places.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
         'users.id'), nullable=False)
+
+    def to_json(self):
+        json_traffic = {
+            'id': self.id,
+            'content': self.content,
+            'support_num': self.support_num
+        }
+        return json_traffic
