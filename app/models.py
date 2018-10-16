@@ -86,6 +86,7 @@ class User(db.Model):
     session_key = db.Column(db.String(255), unique=True, nullable=False)
     nick_name = db.Column(db.String(64))
     avatar_url = db.Column(db.String(255))
+    create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     watch = db.relationship('Place', secondary=watch, lazy='dynamic',
                             backref=db.backref('watch_users', lazy='dynamic'))
@@ -160,6 +161,7 @@ class Place(db.Model):
     name = db.Column(db.String(255), unique=True, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
+    create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     images = db.relationship('Image', backref='place')
     traffic_infos = db.relationship('Traffic', backref='place', lazy='dynamic')
     hotel_infos = db.relationship('Hotel', backref='place', lazy='dynamic')
@@ -197,6 +199,7 @@ class Traffic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
+    create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey(
         'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
@@ -219,6 +222,7 @@ class Hotel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
+    create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey(
         'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
@@ -228,7 +232,8 @@ class Hotel(db.Model):
         json_hotel = {
             'id': self.id,
             'content': self.content,
-            'support_num': self.support_num
+            'support_num': self.support_num,
+            'create_time': self.create_time.strftime( '%Y-%m-%d %H:%M:%S')
         }
         return json_hotel
 
@@ -241,6 +246,7 @@ class Food(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text(), nullable=False)
     support_num = db.Column(db.Integer, nullable=False, default=0)
+    create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey(
         'place.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(

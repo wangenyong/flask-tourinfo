@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 20c39cf17390
+Revision ID: 2f014d9a9000
 Revises: 
-Create Date: 2018-10-16 11:54:05.309846
+Create Date: 2018-10-16 14:44:35.565164
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '20c39cf17390'
+revision = '2f014d9a9000'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,7 @@ def upgrade():
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('country', sa.String(length=64), nullable=False),
     sa.Column('city', sa.String(length=64), nullable=False),
+    sa.Column('create_time', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -49,6 +50,7 @@ def upgrade():
     sa.Column('session_key', sa.String(length=255), nullable=False),
     sa.Column('nick_name', sa.String(length=64), nullable=True),
     sa.Column('avatar_url', sa.String(length=255), nullable=True),
+    sa.Column('create_time', sa.DateTime(), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -59,6 +61,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('support_num', sa.Integer(), nullable=False),
+    sa.Column('create_time', sa.DateTime(), nullable=False),
     sa.Column('place_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['place_id'], ['place.id'], ),
@@ -70,6 +73,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('support_num', sa.Integer(), nullable=False),
+    sa.Column('create_time', sa.DateTime(), nullable=False),
     sa.Column('place_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['place_id'], ['place.id'], ),
@@ -88,6 +92,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('support_num', sa.Integer(), nullable=False),
+    sa.Column('create_time', sa.DateTime(), nullable=False),
     sa.Column('place_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['place_id'], ['place.id'], ),
