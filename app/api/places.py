@@ -1,9 +1,10 @@
 from flask import jsonify, request, g
 from . import api
-from ..models import Place, Image, Permission
+from ..models import Place, Image, Permission, Traffic
 from .. import db, photos, response as res
 from .authentication import auth
 from ..decorators import permission_required
+from sqlalchemy import exc
 
 
 @api.route('/place')
@@ -63,3 +64,21 @@ def watch(id):
     place.watch_users.append(user)
     db.session.commit()
     return jsonify(res.success('watch success'))
+
+
+@api.route('/place/<int:id>/traffic', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def traffic(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    content = request.form['content']
+    traffic = Traffic(content=content)
+    traffic.place = place
+    traffic.user = user
+    try:
+        db.session.add(traffic)
+        db.session.commit()
+    except exc.IntegrityError:
+        return jsonify(res.fail('You have add traffic!'))
+    return jsonify(res.success('add traffic success'))
