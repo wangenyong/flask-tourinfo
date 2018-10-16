@@ -91,3 +91,59 @@ def add_traffic(id):
     except exc.IntegrityError:
         return jsonify(res.fail('You have add traffic!'))
     return jsonify(res.success('add traffic success'))
+
+
+@api.route('/place/<int:id>/hotel')
+@auth.login_required
+def get_hotel(id):
+    hotels = Hotel.query.filter_by(place_id=id).all()
+    if hotels is not None and len(hotels) > 0:
+        data = [hotel.to_json() for hotel in hotels]
+        return jsonify(res.success('get hotel success', data))
+    return jsonify(res.fail('no data'))
+
+
+@api.route('/place/<int:id>/hotel', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def add_hotel(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    content = request.form['content']
+    hotel = Hotel(content=content)
+    hotel.place = place
+    hotel.user = user
+    try:
+        db.session.add(hotel)
+        db.session.commit()
+    except exc.IntegrityError:
+        return jsonify(res.fail('You have add hotel!'))
+    return jsonify(res.success('add hotel success'))
+
+
+@api.route('/place/<int:id>/food')
+@auth.login_required
+def get_food(id):
+    foods = Food.query.filter_by(place_id=id).all()
+    if foods is not None and len(foods) > 0:
+        data = [food.to_json() for food in foods]
+        return jsonify(res.success('get food success', data))
+    return jsonify(res.fail('no data'))
+
+
+@api.route('/place/<int:id>/food', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def add_food(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    content = request.form['content']
+    food = Food(content=content)
+    food.place = place
+    food.user = user
+    try:
+        db.session.add(food)
+        db.session.commit()
+    except exc.IntegrityError:
+        return jsonify(res.fail('You have add food!'))
+    return jsonify(res.success('add food success'))

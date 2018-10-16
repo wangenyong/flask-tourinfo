@@ -205,3 +205,47 @@ class Traffic(db.Model):
             'support_num': self.support_num
         }
         return json_traffic
+
+
+class Hotel(db.Model):
+    __tablename__ = 'hotel'
+    __table_args__ = (
+        db.UniqueConstraint('place_id', 'user_id', name='unique_place_user'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text(), nullable=False)
+    support_num = db.Column(db.Integer, nullable=False, default=0)
+    place_id = db.Column(db.Integer, db.ForeignKey(
+        'places.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+
+    def to_json(self):
+        json_hotel = {
+            'id': self.id,
+            'content': self.content,
+            'support_num': self.support_num
+        }
+        return json_hotel
+
+
+class Food(db.Model):
+    __tablename__ = 'food'
+    __table_args__ = (
+        db.UniqueConstraint('place_id', 'user_id', name='unique_place_user'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text(), nullable=False)
+    support_num = db.Column(db.Integer, nullable=False, default=0)
+    place_id = db.Column(db.Integer, db.ForeignKey(
+        'places.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+
+    def to_json(self):
+        json_food = {
+            'id': self.id,
+            'content': self.content,
+            'support_num': self.support_num
+        }
+        return json_food
