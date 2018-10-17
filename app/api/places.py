@@ -37,18 +37,39 @@ def add_place():
         return jsonify(res.success('add place success'))
 
 
+@api.route('/place/<int:id>/status')
+@auth.login_required
+def get_status(id):
+    place = Place.query.filter_by(id=id).first()
+    user = g.current_user
+    watched = place.watch_users.filter_by(id=user.id).first() is not None
+    stared = place.star_users.filter_by(id=user.id).first() is not None
+    data = {
+        'watched': watched,
+        'stared': stared
+    }
+    return jsonify(res.success('get status success', data))
+
+
 @api.route('/place/<int:id>/star', methods=['POST'])
 @auth.login_required
 @permission_required(Permission.WRITE)
 def star(id):
     place = Place.query.filter_by(id=id).first()
     user = g.current_user
-    exists = place.watch_users.filter_by(id=user.id).first() is not None
+    exists = place.star_users.filter_by(id=user.id).first() is not None
     if exists:
-        return jsonify(res.fail('You have stared'))
-    place.star_users.append(user)
+        place.star_users.remove(user)
+        message = 'cancel star success'
+        stared = False
+    else:
+        place.star_users.append(user)
+        message = 'star success'
+        stared = True
     db.session.commit()
-    return jsonify(res.success('star success'))
+    return jsonify(res.success(message, {
+        'stared': stared
+    }))
 
 
 @api.route('/place/<int:id>/watch', methods=['POST'])
@@ -59,10 +80,17 @@ def watch(id):
     user = g.current_user
     exists = place.watch_users.filter_by(id=user.id).first() is not None
     if exists:
-        return jsonify(res.fail('You have watched'))
-    place.watch_users.append(user)
+        place.watch_users.remove(user)
+        message = 'cancel watch success'
+        watched = False
+    else:
+        place.watch_users.append(user)
+        message = 'watch success'
+        watched = True
     db.session.commit()
-    return jsonify(res.success('watch success'))
+    return jsonify(res.success(message, {
+        'watched': watched
+    }))
 
 
 @api.route('/place/<int:id>/traffic')
