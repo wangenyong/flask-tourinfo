@@ -98,8 +98,13 @@ def add_traffic(id):
 @permission_required(Permission.WRITE)
 def traffic_evaluate(id):
     step = request.form['step']
+    user = g.current_user
     traffic = Traffic.query.filter_by(id=id).first()
+    exists = traffic.evaluate_users.filter_by(id=user.id).first() is not None
+    if exists:
+        return jsonify(res.fail('You have evaluated!'))
     traffic.support_num += int(step)
+    traffic.evaluate_users.append(user)
     db.session.commit()
     return jsonify(res.success('evaluate traffic success'))
 
@@ -137,8 +142,13 @@ def add_hotel(id):
 @permission_required(Permission.WRITE)
 def hotel_evaluate(id):
     step = request.form['step']
+    user = g.current_user
     hotel = Hotel.query.filter_by(id=id).first()
+    exists = hotel.evaluate_users.filter_by(id=user.id).first() is not None
+    if exists:
+        return jsonify(res.fail('You have evaluated!'))
     hotel.support_num += int(step)
+    hotel.evaluate_users.append(user)
     db.session.commit()
     return jsonify(res.success('evaluate hotel success'))
 
@@ -176,7 +186,12 @@ def add_food(id):
 @permission_required(Permission.WRITE)
 def food_evaluate(id):
     step = request.form['step']
+    user = g.current_user
     food = Food.query.filter_by(id=id).first()
+    exists = food.evaluate_users.filter_by(id=user.id).first() is not None
+    if exists:
+        return jsonify(res.fail('You have evaluated!'))
     food.support_num += int(step)
+    food.evaluate_users.append(user)
     db.session.commit()
     return jsonify(res.success('evaluate food success'))
