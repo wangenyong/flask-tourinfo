@@ -93,6 +93,17 @@ def add_traffic(id):
     return jsonify(res.success('add traffic success'))
 
 
+@api.route('/place/traffic/<int:id>/evaluate', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def traffic_evaluate(id):
+    step = request.form['step']
+    traffic = Traffic.query.filter_by(id=id).first()
+    traffic.support_num += int(step)
+    db.session.commit()
+    return jsonify(res.success('evaluate traffic success'))
+
+
 @api.route('/place/<int:id>/hotel')
 @auth.login_required
 def get_hotel(id):
@@ -121,6 +132,17 @@ def add_hotel(id):
     return jsonify(res.success('add hotel success'))
 
 
+@api.route('/place/hotel/<int:id>/evaluate', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def hotel_evaluate(id):
+    step = request.form['step']
+    hotel = Hotel.query.filter_by(id=id).first()
+    hotel.support_num += int(step)
+    db.session.commit()
+    return jsonify(res.success('evaluate hotel success'))
+
+
 @api.route('/place/<int:id>/food')
 @auth.login_required
 def get_food(id):
@@ -147,3 +169,14 @@ def add_food(id):
     except exc.IntegrityError:
         return jsonify(res.fail('You have add food!'))
     return jsonify(res.success('add food success'))
+
+
+@api.route('/place/food/<int:id>/evaluate', methods=['POST'])
+@auth.login_required
+@permission_required(Permission.WRITE)
+def food_evaluate(id):
+    step = request.form['step']
+    food = Food.query.filter_by(id=id).first()
+    food.support_num += int(step)
+    db.session.commit()
+    return jsonify(res.success('evaluate food success'))

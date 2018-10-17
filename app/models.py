@@ -198,7 +198,7 @@ class Traffic(db.Model):
     )
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text(), nullable=False)
-    support_num = db.Column(db.Integer, nullable=False, default=0)
+    support_num = db.Column(db.Integer(), nullable=False, default=0)
     create_time = db.Column(db.DateTime(), default=datetime.datetime.now, nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey(
         'place.id'), nullable=False)
@@ -209,7 +209,8 @@ class Traffic(db.Model):
         json_traffic = {
             'id': self.id,
             'content': self.content,
-            'support_num': self.support_num
+            'support_num': self.support_num,
+            'create_time': self.create_time.strftime( '%Y-%m-%d %H:%M:%S')
         }
         return json_traffic
 
@@ -256,6 +257,7 @@ class Food(db.Model):
         json_food = {
             'id': self.id,
             'content': self.content,
-            'support_num': self.support_num
+            'support_num': self.support_num,
+            'create_time': self.create_time.strftime( '%Y-%m-%d %H:%M:%S')
         }
         return json_food
