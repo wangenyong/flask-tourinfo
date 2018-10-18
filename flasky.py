@@ -11,7 +11,7 @@ migrate = Migrate(app, db)
 @app.cli.command()
 def deploy():
     """Run deployment tasks."""
-    print('deploy')
+    
     # migrate database to latest revision
     upgrade()
 

@@ -6,3 +6,4 @@ nginx/log/
 mysql/
 *.sqlite
 static/images
+/logs

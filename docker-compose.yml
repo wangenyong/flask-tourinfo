@@ -3,6 +3,8 @@ services:
   flasky:
     build: .
     env_file: .env
+    volumes:
+      - ./logs:/home/flasky/logs
     restart: always
     links:
       - mysql:dbserver
