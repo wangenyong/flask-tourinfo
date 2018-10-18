@@ -11,7 +11,6 @@ from sqlalchemy import exc
 @auth.login_required
 @permission_required(Permission.WRITE)
 def get_all_place():
-    app.logger.info('Get all place')
     places = Place.query.all()
     if places is not None and len(places) > 0:
         data = [place.to_json() for place in places]

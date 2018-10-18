@@ -10,4 +10,4 @@ while true; do
     sleep 5
 done
 
-exec gunicorn -b :5000 flasky:app
+exec gunicorn -c ./gunicorn.py flasky:app

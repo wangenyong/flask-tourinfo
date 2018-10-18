@@ -21,7 +21,7 @@ def page_not_found(e):
 
 @api.app_errorhandler(500)
 def internal_server_error(e):
-    app.logger.exception(e)
+    app.logger.error(e)
     response = jsonify(res.fail('internal server error', code=500))
     response.status_code = 500
     return response
